@@ -1,0 +1,8 @@
+to dos
+1- git setup to the ramanand repo
+2- change the folder structure names
+3- make up all the services
+4- write down all the prerequesite
+
+
+set it 
