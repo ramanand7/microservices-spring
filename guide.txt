@@ -1,8 +1,22 @@
 to dos
-1- git setup to the ramanand repo
-2- change the folder structure names
+1- git setup to the ramanand repo - done 
+2- change the folder structure names - 
 3- make up all the services
 4- write down all the prerequesite
 
 
-set it 
+
+
+
+
+
+
+
+
+
+
+prerequesite
+1- make sure the kafka containers are running
+2- postgress ports are running
+3- postman for api enpoints
+4- mongodb compass
