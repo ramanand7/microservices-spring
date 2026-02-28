@@ -9,7 +9,8 @@ to dos
 
 
 
-
+git config --global user.name "ramanand7"
+git config --global user.email "ramanand9958654058@gmail.com"
 
 
 
