@@ -1,8 +1,12 @@
 to dos
-1- git setup to the ramanand repo - done 
-2- change the folder structure names - 
-3- make up all the services
-4- write down all the prerequesite
+1- merge this code in the main branch
+2- prepare all the endpoints till now for testin the services
+3- 1 more lecture implementataion
+4- all the ports and services runnig details in docker environment
+5- make the decision for the local developement environment how the project developement in the local environmet will happen - done
+6- organize the document for the setup and developement
+7- run in dev env
+
 
 
 
@@ -13,6 +17,40 @@ git config --global user.name "ramanand7"
 git config --global user.email "ramanand9958654058@gmail.com"
 
 
+mvn clean compile jib:build
+mvn -pl product-service -am clean compile jib:build
+
+to set user credential for the jib build command
+  <servers>
+    <server>
+      <id>docker.io</id>
+      <username>ramanandsharma</username>
+      <password>Ram@#995865</password>
+    </server>
+
+
+to delete the containers
+docker compose up -d
+docker compose down
+docker compose pull product-service
+
+to keep pause and unpause
+docker compose stop
+docker compose up -d
+
+
+to connet postgres sql to the pgadmin
+
+    Create new server connection:
+    Host: localhost
+    Port: 5431
+    Database: common-service
+    Username: ramsharma
+    Password: 995865
+
+
+to connet postgres to the mongodb compass
+    connect it with the url - localhost:27017
 
 
 
@@ -21,3 +59,24 @@ prerequesite
 2- postgress ports are running
 3- postman for api enpoints
 4- mongodb compass
+
+Notes :
+1- connect to the postgre pgamin
+2- connect to the mongoDb compass
+3- docker compose file that runs all the services
+4- jib build that makes the docker contairer of the srvices and upload them to the docker hub
+
+
+Decisions :
+ for developent - run the debug environment
+     - in debug environment also use the docker images possible
+            postgres db
+            mongo db
+            kafka
+            zookeper
+            zipkin
+     - just commet or have the saperate file
+     - docker compose -f docker-compose.envfordev.yml up -d
+     - for time mismatch add vm options -- -Duser.timezone=Asia/Kolkata
+
+ for sharing - share the docker environment
