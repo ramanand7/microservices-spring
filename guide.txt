@@ -1,11 +1,8 @@
 to dos
-1- merge this code in the main branch
-2- prepare all the endpoints till now for testin the services
-3- 1 more lecture implementataion
-4- all the ports and services runnig details in docker environment
-5- make the decision for the local developement environment how the project developement in the local environmet will happen - done
-6- organize the document for the setup and developement
-7- run in dev env
+1- 1 more lecture implementataion - pending
+2- make the login flow
+
+
 
 
 
@@ -80,3 +77,5 @@ Decisions :
      - for time mismatch add vm options -- -Duser.timezone=Asia/Kolkata
 
  for sharing - share the docker environment
+
+ amntr2025@123

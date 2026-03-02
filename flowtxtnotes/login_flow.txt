@@ -1,0 +1,176 @@
+loging
+
+1- enter app --> splash screen shows --> if not login --> land to login page
+                                     --> if login --> land to screen page
+
+ register -> ok done
+ login -> field and variable will be on for the login session
+
+ logout -> everything will be down and
+ session expire --> refresh the token and give new ascess token
+
+ refresh ascess token
+
+ 1- if acess token expire then ?
+ 2- if refresh token expire then
+
+
+ 1- register
+ 2- login
+ 3- session expire
+ 4- logout happen
+ 5-
+
+ for protected endpoints
+ 1- if request with bear token
+      - theat mean there will be the x user info in the request
+ 2- if request not with bear token
+      - no x user info in the request for the sebseuqent services
+
+
+ endpoints detials
+
+ 1- register Post- http://localhost:8181/api/v1/auth/register
+ rule - for one user the username and the mobile number should be unique
+ Payload
+     {
+       "username": "ramusharmaa",
+       "mobileNumber": "9876543215",
+       "password": "securePass123",
+       "roleName": "USER"
+     }
+
+when created suscessfully
+request status - 201
+{
+    "success": true,
+    "message": "User registered successfully",
+    "data": {
+        "id": 2,
+        "username": "ramusharmaa",
+        "mobileNumber": "9876543218",
+        "roleName": "USER",
+        "isActive": true,
+        "isLocked": false,
+        "lastLogin": null,
+        "createdAt": "2026-03-02T15:53:10.5807109"
+    },
+    "timestamp": "2026-03-02T15:53:10.6476408",
+    "path": null
+}
+
+
+status 400 bad request
+if username already exists
+    {
+        "success": false,
+        "message": "Username already exists",
+        "data": null,
+        "timestamp": "2026-03-02T15:50:59.9399249",
+        "path": "/auth/register"
+    }
+    {
+        "success": false,
+        "message": "Mobile number already exists",
+        "data": null,
+        "timestamp": "2026-03-02T15:52:42.7425829",
+        "path": "/auth/register"
+    }
+
+Login - POST- http://localhost:8181/api/v1/auth/login
+{
+  "usernameOrMobile": "ramusharma",
+  "password": "securePass123"
+}
+
+
+response
+{
+    "success": true,
+    "message": "Login successful",
+    "data": {
+        "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm1vYmlsZSI6Ijk4NzY1NDMyMTUiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcklkIjoxLCJzdWIiOiJyYW11c2hhcm1hIiwiaWF0IjoxNzcyNDQ3ODI3LCJleHAiOjE3NzI0NDg3Mjd9.Z8p5zwDHcUyK4Pdriw4qwpQZGc6Qb_cxBYJgT9_FhGrLKAKzUc-SnquKxFzXxkWcJgXaZms5ZQ2rw3jDc741pA",
+        "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJtb2JpbGUiOiI5ODc2NTQzMjE1IiwidHlwZSI6InJlZnJlc2giLCJ1c2VySWQiOiJyYW11c2hhcm1hIiwic3ViIjoicmFtdXNoYXJtYSIsImlhdCI6MTc3MjQ0NzgyNywiZXhwIjoxNzczMDUyNjI3fQ.iaS4YGw89BYLeFkNoAeT1RvMqYV5WaiEfplcr6ZJ7CXir0UPkZ1AEexmZusyYSqF8DRF5mT4SSXi8vgTi3FoLg",
+        "tokenType": "Bearer",
+        "expiresIn": 900000,
+        "issuedAt": "2026-03-02T16:07:07.6440985",
+        "expiresAt": "2026-03-02T16:22:07.6440985",
+        "user": {
+            "id": 1,
+            "username": "ramusharma",
+            "mobileNumber": "9876543215",
+            "roleName": "USER",
+            "isActive": true,
+            "isLocked": false,
+            "lastLogin": "2026-03-02T16:07:07.6067935",
+            "createdAt": "2026-03-01T08:58:38.576934"
+        }
+    },
+    "timestamp": "2026-03-02T16:07:07.6440985",
+    "path": null
+}
+
+
+if username wrong 401
+{
+    "success": false,
+    "message": "Invalid credentials",
+    "data": null,
+    "timestamp": "2026-03-02T16:08:32.8349857",
+    "path": "/auth/login"
+}
+if password wrong 401
+{
+    "success": false,
+    "message": "Invalid credentials",
+    "data": null,
+    "timestamp": "2026-03-02T16:09:19.0739991",
+    "path": "/auth/login"
+}
+
+if again login api hit then same suscess response
+
+
+if ascess token expires in middel
+{
+    "success": false,
+    "errorType": "Token Expired",
+    "message": "Access token has expired. Please renew it.",
+    "status": 401,
+    "timestamp": "2026-03-02T18:08:13.264685"
+}
+
+if refresh token expires
+if we go to refresh the ascess token and then the refresh token is expired then ??
+ folw -> lant it to the login again window
+
+
+refresh token  post localhost:8181/api/v1/auth/refresh
+{
+  "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJtb2JpbGUiOiI5ODc2NTQzMjE1IiwidHlwZSI6InJlZnJlc2giLCJ1c2VySWQiOiJyYW11c2hhcm1hIiwic3ViIjoicmFtdXNoYXJtYSIsImlhdCI6MTc3MjQ1MDYyNCwiZXhwIjoxNzczMDU1NDI0fQ.dCC0p45c-WMhkEcyYhhp25OSHOPKe4vfVX372UcY9aBsirsaOzr9wLkxNvL0Pjd0KSHfFdVQjAuFaW0MS0mPbQ"
+}
+
+{
+    "success": true,
+    "message": "Token refreshed successfully",
+    "data": {
+        "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm1vYmlsZSI6Ijk4NzY1NDMyMTUiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcklkIjoxLCJzdWIiOiJyYW11c2hhcm1hIiwiaWF0IjoxNzcyNDUxNDAzLCJleHAiOjE3NzI0NTIzMDN9.4OU8C7A8doF2rcecVuXwjXu37hw2Z3i8feu_De5I6smQ1fqXWMsYsjZJ-ye_HQB-LYUJiAqF98u0PkX8zADOgQ",
+        "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJtb2JpbGUiOiI5ODc2NTQzMjE1IiwidHlwZSI6InJlZnJlc2giLCJ1c2VySWQiOiJyYW11c2hhcm1hIiwic3ViIjoicmFtdXNoYXJtYSIsImlhdCI6MTc3MjQ1MDYyNCwiZXhwIjoxNzczMDU1NDI0fQ.dCC0p45c-WMhkEcyYhhp25OSHOPKe4vfVX372UcY9aBsirsaOzr9wLkxNvL0Pjd0KSHfFdVQjAuFaW0MS0mPbQ",
+        "tokenType": "Bearer",
+        "expiresIn": 900000,
+        "issuedAt": "2026-03-02T17:06:43.8745985",
+        "expiresAt": "2026-03-02T17:21:43.8745985",
+        "user": {
+            "id": 1,
+            "username": "ramusharma",
+            "mobileNumber": "9876543215",
+            "roleName": "USER",
+            "isActive": true,
+            "isLocked": false,
+            "lastLogin": "2026-03-02T16:53:44.76073",
+            "createdAt": "2026-03-01T08:58:38.576934"
+        }
+    },
+    "timestamp": "2026-03-02T17:06:43.8751034",
+    "path": null
+}
