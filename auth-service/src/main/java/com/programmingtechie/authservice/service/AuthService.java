@@ -5,6 +5,7 @@ import com.programmingtechie.authservice.entity.Role;
 import com.programmingtechie.authservice.entity.Session;
 import com.programmingtechie.authservice.entity.User;
 import com.programmingtechie.authservice.exceptions.InvalidTokenException;
+import com.programmingtechie.authservice.exceptions.RefreshTokenExpiredException;
 import com.programmingtechie.authservice.exceptions.UserAlreadyExistsException;
 import com.programmingtechie.authservice.exceptions.UserNotFoundException;
 import com.programmingtechie.authservice.repository.RoleRepository;
@@ -135,6 +136,7 @@ public class AuthService {
     }
 
     public ApiResponse<TokenResponse> refreshToken(String refreshToken) {
+       try {
         log.info("Attempting to refresh token");
 
         if (!jwtService.isRefreshToken(refreshToken)) {
@@ -142,7 +144,7 @@ public class AuthService {
         }
 
         if (jwtService.isTokenExpired(refreshToken)) {
-            throw new InvalidTokenException("Refresh token has expired. Please login again.");
+           throw new RefreshTokenExpiredException("Refresh token has expired. Please login again.");
         }
 
         String username = jwtService.extractUsername(refreshToken);
@@ -176,7 +178,10 @@ public class AuthService {
         tokenResponse.setUser(convertToUserResponse(user));
 
         log.info("Token refreshed successfully for user: {}", username);
-        return ApiResponse.success(tokenResponse, "Token refreshed successfully");
+        return ApiResponse.success(tokenResponse, "Token refreshed successfully");}
+        catch(io.jsonwebtoken.ExpiredJwtException e){
+           throw new RefreshTokenExpiredException("Refresh token has expired. Please login again.");
+        }
     }
 
     public ApiResponse<String> logout(String accessToken, HttpServletRequest httpRequest) {

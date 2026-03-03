@@ -13,9 +13,11 @@ public class ApiResponse<T> {
 
     private boolean success;
     private String message;
+    private String errorType;
     private T data;
     private LocalDateTime timestamp;
     private String path;
+
 
     public static <T> ApiResponse<T> success(T data, String message) {
         ApiResponse<T> response = new ApiResponse<>();
