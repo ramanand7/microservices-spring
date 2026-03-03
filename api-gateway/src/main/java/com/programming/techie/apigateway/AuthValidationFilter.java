@@ -1,5 +1,8 @@
 package com.programming.techie.apigateway;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -60,6 +63,7 @@ public class AuthValidationFilter implements GlobalFilter, Ordered {
                         clientResponse.createException().flatMap(Mono::error)
                 )
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<UserInfoDetails>>() {})
+                .doOnNext(System.out::println)
                 .flatMap(user -> {
     if (user != null) {
         exchange.getAttributes().put("userDetails", user);
@@ -72,6 +76,7 @@ public class AuthValidationFilter implements GlobalFilter, Ordered {
             ServerWebExchange mutatedExchange = exchange.mutate().request(mutatedRequest).build();
             return chain.filter(mutatedExchange);
         } catch (Exception ex) {
+            ex.printStackTrace();
             exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
             return exchange.getResponse().setComplete();
         }
@@ -81,11 +86,13 @@ public class AuthValidationFilter implements GlobalFilter, Ordered {
     }
 })
                 .onErrorResume(e -> {
+                    e.printStackTrace();
                    if (e instanceof org.springframework.web.reactive.function.client.WebClientResponseException ex) {
                         exchange.getResponse().setStatusCode(ex.getStatusCode());
                         DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(ex.getResponseBodyAsByteArray());
                         return exchange.getResponse().writeWith(Mono.just(buffer));
                     } else {
+
                         exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
                         return exchange.getResponse().setComplete();
                     }
@@ -101,13 +108,16 @@ public class AuthValidationFilter implements GlobalFilter, Ordered {
     public static class UserInfoDetails {
         private String username;
         private String mobileNumber;
-        private Object authorities;
+       // private Object authorities;
+        private List<Map<String, String>> authorities;
         private boolean accountNonExpired;
         private boolean accountNonLocked;
         private boolean credentialsNonExpired;
         private boolean enabled;
 
-        public UserInfoDetails(String username, String mobileNumber, Object authorities,
+         public UserInfoDetails() {}
+
+        public UserInfoDetails(String username, String mobileNumber,  List<Map<String, String>> authorities,
                 boolean accountNonExpired, boolean accountNonLocked,
                 boolean credentialsNonExpired, boolean enabled) {
             this.username = username;
@@ -140,7 +150,7 @@ public class AuthValidationFilter implements GlobalFilter, Ordered {
             return authorities;
         }
 
-        public void setAuthorities(Object authorities) {
+        public void setAuthorities( List<Map<String, String>> authorities) {
             this.authorities = authorities;
         }
 

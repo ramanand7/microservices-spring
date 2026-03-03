@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.programmingtechie.authservice.dto.ApiResponse;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,4 +82,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("Internal server error", request.getDescription(false)));
     }
+@ExceptionHandler(RefreshTokenExpiredException.class)
+public ResponseEntity<ApiResponse<String>> handleRefreshTokenExpired(
+        RefreshTokenExpiredException ex,
+        WebRequest request) {
+
+    log.error("Refresh token expired: {}", ex.getMessage());
+
+    return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(ApiResponse.error(
+                    "Refresh token has expired. Please login again.",
+                    request.getDescription(false)   // real path, e.g. "/auth/refresh"
+            ));
+}
 }

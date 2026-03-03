@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -113,5 +115,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         body.put("timestamp", LocalDateTime.now());
 
         objectMapper.writeValue(response.getOutputStream(), body);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return "/auth/refresh".equals(path);
+        // or: return path.startsWith("/auth/refresh") || path.equals("/auth/login") etc.
     }
 }

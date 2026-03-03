@@ -143,6 +143,13 @@ if ascess token expires in middel
 if refresh token expires
 if we go to refresh the ascess token and then the refresh token is expired then ??
  folw -> lant it to the login again window
+ {
+    "success": false,
+    "message": "Refresh token has expired. Please login again.3",
+    "data": null,
+    "timestamp": "2026-03-03T13:38:59.93628",
+    "path": "/auth/refresh"
+}
 
 
 refresh token  post localhost:8181/api/v1/auth/refresh
@@ -174,3 +181,199 @@ refresh token  post localhost:8181/api/v1/auth/refresh
     "timestamp": "2026-03-02T17:06:43.8751034",
     "path": null
 }
+if refresh token gets expired
+ {
+    "success": false,
+    "message": "Refresh token has expired. Please login again.3",
+    "data": null,
+    "timestamp": "2026-03-03T13:38:59.93628",
+    "path": "/auth/refresh"
+}
+
+
+AUTHENTICATION API DOCUMENTATION
+Base URL: http://localhost:8181/api/v1
+=================================
+
+
+1. REGISTER
+-----------
+POST http://localhost:8181/api/v1/auth/register
+
+Rules:
+  - username must be unique
+  - mobileNumber must be unique
+
+Request:
+  {
+    "username": "ramusharmaa",
+    "mobileNumber": "9876543215",
+    "password": "securePass123",
+    "roleName": "USER"
+  }
+
+Response 201 - Success:
+  {
+      "success": true,
+      "message": "User registered successfully",
+      "data": {
+          "id": 2,
+          "username": "ramusharmaa",
+          "mobileNumber": "9876543218",
+          "roleName": "USER",
+          "isActive": true,
+          "isLocked": false,
+          "lastLogin": null,
+          "createdAt": "2026-03-02T15:53:10.5807109"
+      },
+      "timestamp": "2026-03-02T15:53:10.6476408",
+      "path": null
+  }
+
+Response 400 - Username already exists:
+  {
+      "success": false,
+      "message": "Username already exists",
+      "data": null,
+      "timestamp": "2026-03-02T15:50:59.9399249",
+      "path": "/auth/register"
+  }
+
+Response 400 - Mobile number already exists:
+  {
+      "success": false,
+      "message": "Mobile number already exists",
+      "data": null,
+      "timestamp": "2026-03-02T15:52:42.7425829",
+      "path": "/auth/register"
+  }
+
+
+2. LOGIN
+--------
+POST http://localhost:8181/api/v1/auth/login
+
+Request:
+  {
+    "usernameOrMobile": "ramusharma",
+    "password": "securePass123"
+  }
+
+Response 200 - Success:
+  {
+      "success": true,
+      "message": "Login successful",
+      "data": {
+          "accessToken": "eyJhbGciOiJIUzUxMiJ9...",
+          "refreshToken": "eyJhbGciOiJIUzUxMiJ9...",
+          "tokenType": "Bearer",
+          "expiresIn": 900000,
+          "issuedAt": "2026-03-02T16:07:07.6440985",
+          "expiresAt": "2026-03-02T16:22:07.6440985",
+          "user": {
+              "id": 1,
+              "username": "ramusharma",
+              "mobileNumber": "9876543215",
+              "roleName": "USER",
+              "isActive": true,
+              "isLocked": false,
+              "lastLogin": "2026-03-02T16:07:07.6067935",
+              "createdAt": "2026-03-01T08:58:38.576934"
+          }
+      },
+      "timestamp": "2026-03-02T16:07:07.6440985",
+      "path": null
+  }
+
+Response 401 - Invalid credentials (same for wrong username or wrong password):
+  {
+      "success": false,
+      "message": "Invalid credentials",
+      "data": null,
+      "timestamp": "2026-03-02T16:08:32.8349857",
+      "path": "/auth/login"
+  }
+
+Note: Calling login again while already logged in returns the same success response.
+
+
+3. REFRESH ACCESS TOKEN
+-----------------------
+POST http://localhost:8181/api/v1/auth/refresh
+
+Request:
+  {
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9..."
+  }
+
+Response 200 - Success:
+  {
+      "success": true,
+      "message": "Token refreshed successfully",
+      "data": {
+          "accessToken": "eyJhbGciOiJIUzUxMiJ9...",
+          "refreshToken": "eyJhbGciOiJIUzUxMiJ9...",
+          "tokenType": "Bearer",
+          "expiresIn": 900000,
+          "issuedAt": "2026-03-02T17:06:43.8745985",
+          "expiresAt": "2026-03-02T17:21:43.8745985",
+          "user": {
+              "id": 1,
+              "username": "ramusharma",
+              "mobileNumber": "9876543215",
+              "roleName": "USER",
+              "isActive": true,
+              "isLocked": false,
+              "lastLogin": "2026-03-02T16:53:44.76073",
+              "createdAt": "2026-03-01T08:58:38.576934"
+          }
+      },
+      "timestamp": "2026-03-02T17:06:43.8751034",
+      "path": null
+  }
+
+Response 401 - Refresh token expired:
+  {
+      "success": false,
+      "message": "Refresh token has expired. Please login again.",
+      "data": null,
+      "timestamp": "2026-03-03T13:38:59.93628",
+      "path": "/auth/refresh"
+  }
+  -> On this error: clear all tokens and redirect to Login page
+
+
+4. ACCESS TOKEN EXPIRED (mid-session)
+--------------------------------------
+When any protected API call returns this:
+  {
+      "success": false,
+      "errorType": "Token Expired",
+      "message": "Access token has expired. Please renew it.",
+      "status": 401,
+      "timestamp": "2026-03-02T18:08:13.264685"
+  }
+  -> Call POST /auth/refresh silently, store new access token, retry original request
+  -> If refresh also fails, clear tokens and redirect to Login page
+
+
+5. PROTECTED ENDPOINTS
+-----------------------
+Include the access token in every request header:
+  Authorization: Bearer <access_token>
+
+  - With token    -> gateway injects X-User-Info header for downstream services
+  - Without token -> no X-User-Info; protected routes return 401
+
+
+6. SESSION FLOW
+---------------
+App launch:
+  - Not logged in -> show Login page
+  - Logged in     -> go to Home screen
+
+Logout:
+  - Clear tokens locally
+  - Call logout endpoint
+  - Redirect to Login page
+  - All session variables reset
